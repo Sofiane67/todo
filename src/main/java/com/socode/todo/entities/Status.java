@@ -2,6 +2,7 @@ package com.socode.todo.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotEmpty
+    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "status")

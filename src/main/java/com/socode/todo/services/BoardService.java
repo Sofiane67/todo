@@ -17,7 +17,7 @@ public class BoardService {
     public List<Board> getBoards(){
         return this.boardRepository.findAll();
     }
-    public Board getBoard(int id){
+    public Board getBoardById(int id){
         return this.boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Le board spécifiée n'existe pas"));
     }
     public void createBoard(Board board){
@@ -25,7 +25,7 @@ public class BoardService {
     }
 
     public void editBoard(Board boardEdited, int id){
-        Board board = this.getBoard(id);
+        Board board = this.getBoardById(id);
         board.setName(boardEdited.getName());
         this.boardRepository.save(board);
     }

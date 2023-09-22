@@ -1,8 +1,8 @@
 package com.socode.todo.controllers;
 
 import com.socode.todo.dto.ApiResponseDTO;
-import com.socode.todo.entities.Board;
-import com.socode.todo.services.BoardService;
+import com.socode.todo.entities.Status;
+import com.socode.todo.services.StatusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,50 +12,49 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "board", produces = APPLICATION_JSON_VALUE)
-public class BoardController {
-    private BoardService boardService;
+@RequestMapping(value = "status", produces = APPLICATION_JSON_VALUE)
+public class StatusController {
+    private StatusService statusService;
     private ApiResponseDTO apiResponse;
 
-    public BoardController(BoardService boardService){
-        this.boardService = boardService;
+    public StatusController(StatusService statusService){
+        this.statusService = statusService;
         this.apiResponse = new ApiResponseDTO();
     }
 
     @GetMapping
-    public ResponseEntity<?> getBoards(){
-        try {
-            List<Board> boards = this.boardService.getBoards();
-            return ResponseEntity.status(HttpStatus.OK).body(boards);
-
-        }catch (Exception e){
+    public ResponseEntity<?> getStatus(){
+        try{
+            List<Status> status = this.statusService.getStatus();
+            return ResponseEntity.status(HttpStatus.OK).body(status);
+        }catch(Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            apiResponse.setStatus(HttpStatus.OK);
-            apiResponse.setMessage("Impossible d'obtenir la liste des boards, un erreur s'est produite");
+            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
+            apiResponse.setMessage("Une erreur s'est produite");
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<?> getBoard(@PathVariable int id){
+    public ResponseEntity<?> getStatusById(@PathVariable int id){
         try{
-            Board board = this.boardService.getBoardById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(board);
+            Status status = this.statusService.getStatusById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(status);
         }catch(Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
             apiResponse.setStatus(HttpStatus.BAD_REQUEST);
             apiResponse.setMessage("Une erreur s'est produite");
-            return ResponseEntity.status(apiResponse.getStatus()).body(e);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseDTO> createBoard(@RequestBody Board board){
+    public ResponseEntity<ApiResponseDTO> createStatus(@RequestBody Status status){
         try{
-            this.boardService.createBoard(board);
-            apiResponse.setStatusCode(HttpStatus.CREATED.value());
-            apiResponse.setStatus(HttpStatus.CREATED);
-            apiResponse.setMessage("Board créé avec succès");
+            this.statusService.createStatus(status);
+            apiResponse.setStatusCode(HttpStatus.OK.value());
+            apiResponse.setStatus(HttpStatus.OK);
+            apiResponse.setMessage("Le status a été créé avec succées");
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }catch(Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -66,32 +65,32 @@ public class BoardController {
     }
 
     @PutMapping(path = "{id}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseDTO> editBoard(@PathVariable int id, @RequestBody Board board){
+    public ResponseEntity<?> editStatus(@PathVariable int id, @RequestBody Status status){
         try{
-            this.boardService.editBoard(board, id);
-            apiResponse.setStatus(HttpStatus.OK);
             apiResponse.setStatusCode(HttpStatus.OK.value());
-            apiResponse.setMessage("Le board à été modifié avec succès");
+            apiResponse.setStatus(HttpStatus.OK);
+            apiResponse.setMessage("Le status a été modifié avec succées");
+            this.statusService.editStatus(id, status);
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-        }catch(Exception e){
-            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
             apiResponse.setMessage("Une erreur s'est produite");
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> removeBoard(@PathVariable int id){
+    public ResponseEntity<?> removeStatus(@PathVariable int id){
         try{
-            this.boardService.removeBoard(id);
-            apiResponse.setStatus(HttpStatus.OK);
             apiResponse.setStatusCode(HttpStatus.OK.value());
-            apiResponse.setMessage("Le board à été supprimé avec succès");
+            apiResponse.setStatus(HttpStatus.OK);
+            apiResponse.setMessage("Le status a été supprimé avec succées");
+            this.statusService.removeStatus(id);
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-        }catch(Exception e){
-            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            apiResponse.setStatus(HttpStatus.BAD_REQUEST);
             apiResponse.setMessage("Une erreur s'est produite");
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }
