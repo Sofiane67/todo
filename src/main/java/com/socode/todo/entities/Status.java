@@ -3,6 +3,8 @@ package com.socode.todo.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.List;
+
 @Entity
 @Table(name = "status")
 public class Status {
@@ -11,6 +13,9 @@ public class Status {
     private int id;
     @NotEmpty
     private String name;
+
+    @OneToMany(mappedBy = "status")
+    private List<BoardColumns> boardStatuses;
 
     public Status(){}
 

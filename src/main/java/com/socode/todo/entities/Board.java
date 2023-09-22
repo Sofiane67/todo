@@ -2,7 +2,8 @@ package com.socode.todo.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import org.yaml.snakeyaml.events.Event;
+
+import java.util.List;
 
 @Entity
 @Table(name = "boards")
@@ -12,6 +13,9 @@ public class Board {
     private int id;
     @NotEmpty
     private String name;
+
+    @OneToMany(mappedBy = "board")
+    private List<BoardColumns> columnList;
 
     public Board(){};
     public Board(int id, String name){
