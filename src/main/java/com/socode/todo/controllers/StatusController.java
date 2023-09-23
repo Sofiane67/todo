@@ -1,7 +1,9 @@
 package com.socode.todo.controllers;
 
 import com.socode.todo.dto.ApiResponseDTO;
+import com.socode.todo.entities.BoardColumns;
 import com.socode.todo.entities.Status;
+import com.socode.todo.services.BoardColumnsService;
 import com.socode.todo.services.StatusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "status", produces = APPLICATION_JSON_VALUE)
 public class StatusController {
     private StatusService statusService;
+    private BoardColumnsService boardColumnsService;
     private ApiResponseDTO apiResponse;
 
-    public StatusController(StatusService statusService){
+    public StatusController(StatusService statusService, BoardColumnsService boardColumnsService){
         this.statusService = statusService;
+        this.boardColumnsService = boardColumnsService;
         this.apiResponse = new ApiResponseDTO();
     }
 
@@ -48,10 +52,16 @@ public class StatusController {
         }
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseDTO> createStatus(@RequestBody Status status){
+    @PostMapping(path = "{boardId}",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponseDTO> createStatus(@PathVariable int boardId, @RequestBody Status status){
         try{
-            this.statusService.createStatus(status);
+
+            System.out.println(boardId);
+            Status addedStatus =  this.statusService.createStatus(status);
+            BoardColumns boardColumns = new BoardColumns();
+            boardColumns.setName(addedStatus.getName());
+            boardColumns.setDisplayed(true);
+            this.boardColumnsService.createBoardColumns(boardId, addedStatus.getId(), boardColumns);
             apiResponse.setStatusCode(HttpStatus.OK.value());
             apiResponse.setStatus(HttpStatus.OK);
             apiResponse.setMessage("Le status a été créé avec succées");
@@ -59,7 +69,7 @@ public class StatusController {
         }catch(Exception e){
             apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
             apiResponse.setStatus(HttpStatus.BAD_REQUEST);
-            apiResponse.setMessage("Une erreur s'est produite");
+            apiResponse.setMessage(e.getMessage());
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
         }
     }

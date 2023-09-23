@@ -13,6 +13,7 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotNull
+    @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "status")

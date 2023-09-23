@@ -22,8 +22,8 @@ public class StatusService {
         return this.statusRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Le status n'existe pas"));
     }
 
-    public void createStatus(Status status){
-        this.statusRepository.save(status);
+    public Status createStatus(Status status){
+        return this.statusRepository.save(status);
     }
 
     public void editStatus(int id, Status statusEdited){

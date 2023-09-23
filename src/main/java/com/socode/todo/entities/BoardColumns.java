@@ -2,28 +2,29 @@ package com.socode.todo.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "board_columns")
+@Table(name = "board_columns", uniqueConstraints = {@UniqueConstraint(columnNames = {"board_id", "status_id"})})
 public class BoardColumns {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty
+    @NotNull
     private String name;
 
     private int orderColumn;
     private boolean isDisplayed;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "board_id")
-    @NotEmpty
+    @NotNull
     private Board board;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "status_id")
-    @NotEmpty
+    @NotNull
     private Status status;
 
     public BoardColumns(){
@@ -34,7 +35,7 @@ public class BoardColumns {
         this.id = id;
         this.name = name;
         this.orderColumn = orderColumn;
-        this.isDisplayed = true;
+        this.isDisplayed = isDisplayed;
         this.board = board;
         this.status = status;
     }
