@@ -5,11 +5,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "tasks")
 public class Task extends TaskModel{
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
 
@@ -28,5 +28,13 @@ public class Task extends TaskModel{
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
