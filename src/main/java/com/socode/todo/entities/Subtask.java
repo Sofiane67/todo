@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "subtasks")
 public class Subtask extends TaskModel{
     private boolean isCompleted;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;
 
@@ -15,7 +15,7 @@ public class Subtask extends TaskModel{
     }
 
     public Subtask(boolean isCompleted, Task task){
-        this.isCompleted = false;
+        this.isCompleted = this.isCompleted();
         this.task = task;
     }
 
